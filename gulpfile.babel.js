@@ -1,9 +1,19 @@
 import gulp from "gulp";
 import babel from "gulp-babel";
 import eslint from "gulp-eslint";
+import mocha from "gulp-mocha";
 
 gulp.task("watch", () => {
   gulp.watch("api/**/*.js", ["lint", "compile"]);
+});
+
+gulp.task("mocha", () => {
+  gulp.src(["test/*.js"])
+    .pipe(mocha({
+      compilers: {
+        js: "js:babel-core/register",
+      },
+    }));
 });
 
 gulp.task("lint", () => {
@@ -19,4 +29,4 @@ gulp.task("compile", () => {
     .pipe(gulp.dest("dist"));
 });
 
-// gulp.task("default", ["watch"]);
+gulp.task("default", ["lint", "compile", "watch"]);
