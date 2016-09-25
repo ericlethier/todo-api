@@ -3,10 +3,13 @@ import logger from "morgan";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 
+import initTodos from "./todo/TodoSeed";
 import routes from "./todo/TodoRoutes";
 
-const app = express();
+// init the todo list
+initTodos();
 
+const app = express();
 app.use(logger("dev"));
 
 app.use(bodyParser.json());

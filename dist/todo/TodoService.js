@@ -4,22 +4,38 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.add = add;
+exports.get = get;
+exports.remove = remove;
 exports.list = list;
-
-var _TodoModel = require("./TodoModel.js");
-
-var _TodoModel2 = _interopRequireDefault(_TodoModel);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 var todos = [];
-var task = new _TodoModel2.default("first task");
-todos.push(task);
+var genId = 1;
 
 function add(_todo) {
   var todo = _todo;
-  todo.id = todos.length;
+  todo.id = genId;
   todos.push(todo);
+  genId += 1;
+}
+
+function get(id) {
+  var idx = 0;
+  for (idx; idx < todos.length; idx += 1) {
+    if (todos[idx].id === id) {
+      return todos[idx];
+    }
+  }
+  return null;
+}
+
+function remove(id) {
+  var idx = 0;
+  for (idx; idx < todos.length; idx += 1) {
+    if (todos[idx].id === id) {
+      todos.splice(idx, 1);
+      return true;
+    }
+  }
+  return false;
 }
 
 function list() {

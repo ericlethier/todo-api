@@ -16,7 +16,9 @@ var router = express.Router(); // eslint-disable-line new-cap
 
 // import Todo from "./TodoModel.js";
 router.get("/", function (req, res) {
-  res.json({ message: "Todo API" });
+  res.json({
+    message: "Todo API"
+  });
 });
 
 router.get("/todos", function (req, res) {
@@ -24,19 +26,39 @@ router.get("/todos", function (req, res) {
 });
 
 router.post("/todos", function (req, res) {
-  res.json({ message: "Not implemented" });
+  res.json({
+    message: "Not implemented"
+  });
 });
 
 router.get("/todos/:id", function (req, res) {
-  res.json({ message: "Not implemented" });
+  var todo = TodoService.get(parseInt(req.params.id, 10));
+  if (todo != null) {
+    res.json(todo);
+  } else {
+    res.json({
+      message: "Todo doesnt exist."
+    });
+  }
 });
 
 router.put("/todos/:id", function (req, res) {
-  res.json({ message: "Not implemented" });
+  res.json({
+    message: "Not implemented"
+  });
 });
 
 router.delete("/todos/:id", function (req, res) {
-  res.json({ message: "Not implemented" });
+  console.log("params", req.params);
+  if (TodoService.remove(parseInt(req.params.id, 10))) {
+    res.json({
+      message: "Todo removed."
+    });
+  } else {
+    res.json({
+      message: "Todo doesnt exist."
+    });
+  }
 });
 
 module.exports = router;
