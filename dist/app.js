@@ -16,6 +16,10 @@ var _bodyParser = require("body-parser");
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
+var _expressValidator = require("express-validator");
+
+var _expressValidator2 = _interopRequireDefault(_expressValidator);
+
 var _TodoSeed = require("./todo/TodoSeed");
 
 var _TodoSeed2 = _interopRequireDefault(_TodoSeed);
@@ -35,6 +39,7 @@ app.use((0, _morgan2.default)("dev"));
 app.use(_bodyParser2.default.json());
 app.use(_bodyParser2.default.urlencoded({ extended: false }));
 app.use((0, _cookieParser2.default)());
+app.use((0, _expressValidator2.default)());
 
 app.use("/", _TodoRoutes2.default);
 

@@ -16,19 +16,28 @@ router.get("/todos", (req, res) => {
 });
 
 router.post("/todos", (req, res) => {
+  req.checkBody("description", "Invalid description.").notEmpty();
+  const errors = req.validationErrors();
+  if (errors) {
+    const response = { errors: [] };
+    errors.forEach((err) => {
+      response.errors.push(err.msg);
+    });
+    return res.json(response);
+  }
+
   const todo = new Todo(req.body.description);
   if (TodoService.add(todo)) {
-    res.json({
+    return res.json({
       message: "Todo added.",
     });
-  } else {
-    res.json({
-      error: "Todo not added.",
-    });
   }
+  return res.json({
+    error: "Todo not added.",
+  });
 });
 
-router.get("/todos/:id", (req, res) => {
+router.get("/todos/:id([0-9]+)", (req, res) => {
   const todo = TodoService.get(parseInt(req.params.id, 10));
   if (todo != null) {
     res.json(todo);
@@ -39,7 +48,7 @@ router.get("/todos/:id", (req, res) => {
   }
 });
 
-router.put("/todos/:id", (req, res) => {
+router.put("/todos/:id([0-9]+)", (req, res) => {
   const todo = new Todo(req.body.description);
   todo.id = parseInt(req.params.id, 10);
   todo.completed = req.body.completed;
@@ -55,7 +64,7 @@ router.put("/todos/:id", (req, res) => {
   }
 });
 
-router.delete("/todos/:id", (req, res) => {
+router.delete("/todos/:id([0-9]+)", (req, res) => {
   if (TodoService.remove(parseInt(req.params.id, 10))) {
     res.json({
       message: "Todo removed.",

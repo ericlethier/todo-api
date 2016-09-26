@@ -40,6 +40,19 @@ describe("Todos", () => {
     });
   });
 
+  describe("/POST todos", () => {
+    it("it should NOT CREATE a todo", (done) => {
+      chai.request(server)
+            .post("/todos")
+            .end((err, res) => {
+              res.should.have.status(200);
+              res.body.should.be.a("object");
+              res.body.should.have.property("errors");
+              done();
+            });
+    });
+  });
+
   describe("/PUT todos", () => {
     it("it should UPDATE a todo", (done) => {
       const todo = { description: "updated test task", completed: true };

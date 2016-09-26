@@ -1,5 +1,7 @@
 "use strict";
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 var _express = require("express");
 
 var express = _interopRequireWildcard(_express);
@@ -30,19 +32,34 @@ router.get("/todos", function (req, res) {
 });
 
 router.post("/todos", function (req, res) {
+  req.checkBody("description", "Invalid description.").notEmpty();
+  var errors = req.validationErrors();
+  if (errors) {
+    var _ret = function () {
+      var response = { errors: [] };
+      errors.forEach(function (err) {
+        response.errors.push(err.msg);
+      });
+      return {
+        v: res.json(response)
+      };
+    }();
+
+    if ((typeof _ret === "undefined" ? "undefined" : _typeof(_ret)) === "object") return _ret.v;
+  }
+
   var todo = new _TodoModel2.default(req.body.description);
   if (TodoService.add(todo)) {
-    res.json({
+    return res.json({
       message: "Todo added."
     });
-  } else {
-    res.json({
-      error: "Todo not added."
-    });
   }
+  return res.json({
+    error: "Todo not added."
+  });
 });
 
-router.get("/todos/:id", function (req, res) {
+router.get("/todos/:id([0-9]+)", function (req, res) {
   var todo = TodoService.get(parseInt(req.params.id, 10));
   if (todo != null) {
     res.json(todo);
@@ -53,7 +70,7 @@ router.get("/todos/:id", function (req, res) {
   }
 });
 
-router.put("/todos/:id", function (req, res) {
+router.put("/todos/:id([0-9]+)", function (req, res) {
   var todo = new _TodoModel2.default(req.body.description);
   todo.id = parseInt(req.params.id, 10);
   todo.completed = req.body.completed;
@@ -69,7 +86,7 @@ router.put("/todos/:id", function (req, res) {
   }
 });
 
-router.delete("/todos/:id", function (req, res) {
+router.delete("/todos/:id([0-9]+)", function (req, res) {
   if (TodoService.remove(parseInt(req.params.id, 10))) {
     res.json({
       message: "Todo removed."
