@@ -1,5 +1,5 @@
 import * as express from "express";
-// import Todo from "./TodoModel.js";
+import Todo from "./TodoModel.js";
 import * as TodoService from "./TodoService.js";
 
 const router = express.Router(); // eslint-disable-line new-cap
@@ -16,9 +16,16 @@ router.get("/todos", (req, res) => {
 });
 
 router.post("/todos", (req, res) => {
-  res.json({
-    message: "Not implemented",
-  });
+  const todo = new Todo(req.body.description);
+  if (TodoService.add(todo)) {
+    res.json({
+      message: "Todo added.",
+    });
+  } else {
+    res.json({
+      error: "Todo not added.",
+    });
+  }
 });
 
 router.get("/todos/:id", (req, res) => {
@@ -27,26 +34,35 @@ router.get("/todos/:id", (req, res) => {
     res.json(todo);
   } else {
     res.json({
-      message: "Todo doesnt exist.",
+      error: "Todo doesnt exist.",
     });
   }
 });
 
 router.put("/todos/:id", (req, res) => {
-  res.json({
-    message: "Not implemented",
-  });
+  const todo = new Todo(req.body.description);
+  todo.id = parseInt(req.params.id, 10);
+  todo.completed = req.body.completed;
+
+  if (TodoService.update(todo)) {
+    res.json({
+      message: "Todo updated.",
+    });
+  } else {
+    res.json({
+      error: "Todo doesnt exist.",
+    });
+  }
 });
 
 router.delete("/todos/:id", (req, res) => {
-  console.log("params", req.params);
   if (TodoService.remove(parseInt(req.params.id, 10))) {
     res.json({
       message: "Todo removed.",
     });
   } else {
     res.json({
-      message: "Todo doesnt exist.",
+      error: "Todo doesnt exist.",
     });
   }
 });

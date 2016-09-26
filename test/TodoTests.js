@@ -25,6 +25,51 @@ describe("Todos", () => {
     });
   });
 
+  describe("/POST todos", () => {
+    it("it should CREATE a todo", (done) => {
+      const todo = { description: "test task" };
+      chai.request(server)
+            .post("/todos")
+            .send(todo)
+            .end((err, res) => {
+              res.should.have.status(200);
+              res.body.should.be.a("object");
+              res.body.should.have.property("message").eql("Todo added.");
+              done();
+            });
+    });
+  });
+
+  describe("/PUT todos", () => {
+    it("it should UPDATE a todo", (done) => {
+      const todo = { description: "updated test task", completed: true };
+      chai.request(server)
+            .put("/todos/1")
+            .send(todo)
+            .end((err, res) => {
+              res.should.have.status(200);
+              res.body.should.be.a("object");
+              res.body.should.have.property("message").eql("Todo updated.");
+              done();
+            });
+    });
+  });
+
+  describe("/PUT todos", () => {
+    it("it should NOT UPDATE a todo", (done) => {
+      const todo = { description: "updated test task", completed: true };
+      chai.request(server)
+            .put("/todos/99")
+            .send(todo)
+            .end((err, res) => {
+              res.should.have.status(200);
+              res.body.should.be.a("object");
+              res.body.should.have.property("error").eql("Todo doesnt exist.");
+              done();
+            });
+    });
+  });
+
   describe("/GET todos/1", () => {
     it("it should GET a todo", (done) => {
       chai.request(server)
@@ -45,7 +90,33 @@ describe("Todos", () => {
             .end((err, res) => {
               res.should.have.status(200);
               res.body.should.be.a("object");
-              res.body.should.have.property("message").eql("Todo doesnt exist.");
+              res.body.should.have.property("error").eql("Todo doesnt exist.");
+              done();
+            });
+    });
+  });
+
+  describe("/DELETE todos", () => {
+    it("it should DELETE a todo", (done) => {
+      chai.request(server)
+            .delete("/todos/1")
+            .end((err, res) => {
+              res.should.have.status(200);
+              res.body.should.be.a("object");
+              res.body.should.have.property("message").eql("Todo removed.");
+              done();
+            });
+    });
+  });
+
+  describe("/DELETE todos", () => {
+    it("it should NOT DELETE a todo", (done) => {
+      chai.request(server)
+            .delete("/todos/99")
+            .end((err, res) => {
+              res.should.have.status(200);
+              res.body.should.be.a("object");
+              res.body.should.have.property("error").eql("Todo doesnt exist.");
               done();
             });
     });

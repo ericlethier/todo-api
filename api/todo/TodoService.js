@@ -6,6 +6,7 @@ export function add(_todo) {
   todo.id = genId;
   todos.push(todo);
   genId += 1;
+  return true;
 }
 
 export function get(id) {
@@ -16,6 +17,17 @@ export function get(id) {
     }
   }
   return null;
+}
+
+export function update(_todo) {
+  let idx = 0;
+  for (idx; idx < todos.length; idx += 1) {
+    if (todos[idx].id === _todo.id) {
+      todos[idx] = _todo;
+      return true;
+    }
+  }
+  return false;
 }
 
 export function remove(id) {
