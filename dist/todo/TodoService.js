@@ -4,53 +4,49 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.add = add;
+exports.getAll = getAll;
 exports.get = get;
 exports.update = update;
 exports.remove = remove;
-exports.list = list;
-var todos = [];
-var genId = 1;
 
-function add(_todo) {
-  var todo = _todo;
-  todo.id = genId;
-  todos.push(todo);
-  genId += 1;
-  return true;
+var _TodoModel = require("./TodoModel.js");
+
+var _TodoModel2 = _interopRequireDefault(_TodoModel);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function add(todo) {
+  return todo.save();
+}
+
+function getAll() {
+  return _TodoModel2.default.find().exec();
 }
 
 function get(id) {
-  var idx = 0;
-  for (idx; idx < todos.length; idx += 1) {
-    if (todos[idx].id === id) {
-      return todos[idx];
-    }
-  }
-  return null;
+  return _TodoModel2.default.findById(id).exec();
 }
 
-function update(_todo) {
-  var idx = 0;
-  for (idx; idx < todos.length; idx += 1) {
-    if (todos[idx].id === _todo.id) {
-      todos[idx] = _todo;
-      return true;
+/* eslint-disable consistent-return  */
+/* eslint-disable no-param-reassign  */
+function update(id, _todo, cb) {
+  _TodoModel2.default.findById(id, function (err, todo) {
+    if (err) {
+      return cb(err, null);
     }
-  }
-  return false;
+    todo.description = _todo.description;
+    todo.completed = _todo.completed;
+    todo.save(function (errSave) {
+      if (errSave) {
+        return cb(errSave, null);
+      }
+      return cb(null, todo);
+    });
+  });
 }
+/* eslint-disable no-param-reassign */
+/* eslint-disable consistent-return  */
 
 function remove(id) {
-  var idx = 0;
-  for (idx; idx < todos.length; idx += 1) {
-    if (todos[idx].id === id) {
-      todos.splice(idx, 1);
-      return true;
-    }
-  }
-  return false;
-}
-
-function list() {
-  return todos;
+  return _TodoModel2.default.remove({ _id: id }).exec();
 }

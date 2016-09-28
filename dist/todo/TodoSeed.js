@@ -18,8 +18,12 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function initTodos() {
-  var todo1 = new _TodoModel2.default("first task");
-  var todo2 = new _TodoModel2.default("second task");
+  var todo1 = new _TodoModel2.default();
+  todo1.description = "first task";
+  todo1.completed = false;
+  var todo2 = new _TodoModel2.default();
+  todo2.description = "second task";
+  todo2.completed = false;
   TodoService.add(todo1);
   TodoService.add(todo2);
 }

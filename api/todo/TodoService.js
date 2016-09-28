@@ -1,46 +1,37 @@
-const todos = [];
-let genId = 1;
+import Todo from "./TodoModel.js";
 
-export function add(_todo) {
-  const todo = _todo;
-  todo.id = genId;
-  todos.push(todo);
-  genId += 1;
-  return true;
+export function add(todo) {
+  return todo.save();
+}
+
+export function getAll() {
+  return Todo.find().exec();
 }
 
 export function get(id) {
-  let idx = 0;
-  for (idx; idx < todos.length; idx += 1) {
-    if (todos[idx].id === id) {
-      return todos[idx];
-    }
-  }
-  return null;
+  return Todo.findById(id).exec();
 }
 
-export function update(_todo) {
-  let idx = 0;
-  for (idx; idx < todos.length; idx += 1) {
-    if (todos[idx].id === _todo.id) {
-      todos[idx] = _todo;
-      return true;
+/* eslint-disable consistent-return  */
+/* eslint-disable no-param-reassign  */
+export function update(id, _todo, cb) {
+  Todo.findById(id, (err, todo) => {
+    if (err) {
+      return cb(err, null);
     }
-  }
-  return false;
+    todo.description = _todo.description;
+    todo.completed = _todo.completed;
+    todo.save((errSave) => {
+      if (errSave) {
+        return cb(errSave, null);
+      }
+      return cb(null, todo);
+    });
+  });
 }
+/* eslint-disable no-param-reassign */
+/* eslint-disable consistent-return  */
 
 export function remove(id) {
-  let idx = 0;
-  for (idx; idx < todos.length; idx += 1) {
-    if (todos[idx].id === id) {
-      todos.splice(idx, 1);
-      return true;
-    }
-  }
-  return false;
-}
-
-export function list() {
-  return todos;
+  return Todo.remove({ _id: id }).exec();
 }

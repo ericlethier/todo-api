@@ -1,10 +1,10 @@
-class Todo {
-  constructor(description) {
-    this.id = -1;
-    this.description = description;
-    this.completed = false;
-  }
-}
+import mongoose from "mongoose";
 
+const Schema = mongoose.Schema;
 
-export { Todo as default };
+const Todo = new Schema({
+  description: String,
+  completed: Boolean,
+});
+
+export default mongoose.model("Todo", Todo);

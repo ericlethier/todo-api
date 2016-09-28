@@ -1,6 +1,8 @@
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+// import Promise from "bluebird";
+
 
 var _express = require("express");
 
@@ -23,14 +25,27 @@ var router = express.Router(); // eslint-disable-line new-cap
 /* GET home page. */
 router.get("/", function (req, res) {
   res.json({
-    message: "Todo API"
+    message: "Todo API v1"
   });
 });
 
 router.get("/todos", function (req, res) {
-  res.json(TodoService.list());
+  TodoService.getAll().then(function (todos) {
+    return res.json(todos);
+  }).catch(function (err) {
+    return res.send(err);
+  });
 });
 
+router.get("/todos/:id", function (req, res) {
+  TodoService.get(req.params.id).then(function (todo) {
+    return res.json(todo);
+  }).catch(function (err) {
+    return res.send(err);
+  });
+});
+
+/* eslint-disable consistent-return  */
 router.post("/todos", function (req, res) {
   req.checkBody("description", "Invalid description.").notEmpty();
   var errors = req.validationErrors();
@@ -48,54 +63,34 @@ router.post("/todos", function (req, res) {
     if ((typeof _ret === "undefined" ? "undefined" : _typeof(_ret)) === "object") return _ret.v;
   }
 
-  var todo = new _TodoModel2.default(req.body.description);
-  if (TodoService.add(todo)) {
-    return res.json({
-      message: "Todo added."
-    });
-  }
-  return res.json({
-    error: "Todo not added."
+  var todo = new _TodoModel2.default();
+  todo.description = req.body.description;
+  todo.completed = false;
+  TodoService.add(todo).then(function (_todo) {
+    return res.json(_todo);
+  }).catch(function (err) {
+    return res.send(err);
+  });
+});
+/* eslint-disable consistent-return  */
+
+router.put("/todos/:id", function (req, res) {
+  var todo = new _TodoModel2.default();
+  todo.description = req.body.description;
+  todo.completed = req.body.completed;
+
+  TodoService.update(req.params.id, todo, function (err, _todo) {
+    if (err) {
+      return res.json(err);
+    }
+    return res.json(_todo);
   });
 });
 
-router.get("/todos/:id([0-9]+)", function (req, res) {
-  var todo = TodoService.get(parseInt(req.params.id, 10));
-  if (todo != null) {
-    res.json(todo);
-  } else {
-    res.json({
-      error: "Todo doesnt exist."
-    });
-  }
-});
-
-router.put("/todos/:id([0-9]+)", function (req, res) {
-  var todo = new _TodoModel2.default(req.body.description);
-  todo.id = parseInt(req.params.id, 10);
-  todo.completed = req.body.completed;
-
-  if (TodoService.update(todo)) {
-    res.json({
-      message: "Todo updated."
-    });
-  } else {
-    res.json({
-      error: "Todo doesnt exist."
-    });
-  }
-});
-
-router.delete("/todos/:id([0-9]+)", function (req, res) {
-  if (TodoService.remove(parseInt(req.params.id, 10))) {
-    res.json({
-      message: "Todo removed."
-    });
-  } else {
-    res.json({
-      error: "Todo doesnt exist."
-    });
-  }
+router.delete("/todos/:id", function (req, res) {
+  TodoService.remove(req.params.id).then(res.json({ message: "Todo deleted!" })).catch(function (err) {
+    return res.send(err);
+  });
 });
 
 module.exports = router;

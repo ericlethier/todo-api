@@ -3,13 +3,24 @@ import logger from "morgan";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import expressValidator from "express-validator";
+import mongoose from "mongoose";
+import bluebird from "bluebird";
 import initTodos from "./todo/TodoSeed";
 import routes from "./todo/TodoRoutes";
+import config from "./config/env/development";
+
+const app = express();
+
+// init the mongodb connection
+mongoose.Promise = bluebird;
+mongoose.connect(config.db, { server: { socketOptions: { keepAlive: 1 } } });
+mongoose.connection.on("error", () => {
+  throw new Error(`unable to connect to database: ${config.db}`);
+});
 
 // init the todo list
 initTodos();
 
-const app = express();
 app.use(logger("dev"));
 
 app.use(bodyParser.json());
@@ -17,7 +28,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(expressValidator());
 
-app.use("/", routes);
+app.use("/api/v1", routes);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

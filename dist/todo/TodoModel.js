@@ -4,14 +4,17 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _mongoose = require("mongoose");
 
-var Todo = function Todo(description) {
-  _classCallCheck(this, Todo);
+var _mongoose2 = _interopRequireDefault(_mongoose);
 
-  this.id = -1;
-  this.description = description;
-  this.completed = false;
-};
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = Todo;
+var Schema = _mongoose2.default.Schema;
+
+var Todo = new Schema({
+  description: String,
+  completed: Boolean
+});
+
+exports.default = _mongoose2.default.model("Todo", Todo);
