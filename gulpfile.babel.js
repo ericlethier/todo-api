@@ -2,6 +2,7 @@ import gulp from "gulp";
 import babel from "gulp-babel";
 import eslint from "gulp-eslint";
 import mocha from "gulp-mocha";
+import del from "del";
 
 gulp.task("watch", () => {
   gulp.watch("api/**/*.js", ["lint", "compile"]);
@@ -14,6 +15,12 @@ gulp.task("mocha", () => {
         js: "js:babel-core/register",
       },
     }));
+});
+
+gulp.task("clean", () => {
+  del([
+    "dist/**",
+  ]);
 });
 
 gulp.task("lint", () => {
