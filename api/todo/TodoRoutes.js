@@ -50,17 +50,14 @@ router.put("/todos/:id", (req, res) => {
   todo.description = req.body.description;
   todo.completed = req.body.completed;
 
-  TodoService.update(req.params.id, todo, (err, _todo) => {
-    if (err) {
-      return res.json(err);
-    }
-    return res.json(_todo);
-  });
+  TodoService.update(req.params.id, todo)
+  .then(_todo => res.json({ message: "Todo updated." }))
+  .catch(err => res.send(err));
 });
 
 router.delete("/todos/:id", (req, res) => {
   TodoService.remove(req.params.id)
-  .then(res.json({ message: "Todo deleted!" }))
+  .then(res.json({ message: "Todo deleted." }))
   .catch(err => res.send(err));
 });
 

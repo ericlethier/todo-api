@@ -79,16 +79,15 @@ router.put("/todos/:id", function (req, res) {
   todo.description = req.body.description;
   todo.completed = req.body.completed;
 
-  TodoService.update(req.params.id, todo, function (err, _todo) {
-    if (err) {
-      return res.json(err);
-    }
-    return res.json(_todo);
+  TodoService.update(req.params.id, todo).then(function (_todo) {
+    return res.json({ message: "Todo updated." });
+  }).catch(function (err) {
+    return res.send(err);
   });
 });
 
 router.delete("/todos/:id", function (req, res) {
-  TodoService.remove(req.params.id).then(res.json({ message: "Todo deleted!" })).catch(function (err) {
+  TodoService.remove(req.params.id).then(res.json({ message: "Todo deleted." })).catch(function (err) {
     return res.send(err);
   });
 });

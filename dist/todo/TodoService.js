@@ -27,25 +27,10 @@ function get(id) {
   return _TodoModel2.default.findById(id).exec();
 }
 
-/* eslint-disable consistent-return  */
-/* eslint-disable no-param-reassign  */
-function update(id, _todo, cb) {
-  _TodoModel2.default.findById(id, function (err, todo) {
-    if (err) {
-      return cb(err, null);
-    }
-    todo.description = _todo.description;
-    todo.completed = _todo.completed;
-    todo.save(function (errSave) {
-      if (errSave) {
-        return cb(errSave, null);
-      }
-      return cb(null, todo);
-    });
-  });
+function update(id, todo) {
+  return _TodoModel2.default.update({ _id: id }, { $set: { description: todo.description,
+      completed: todo.completed } }).exec();
 }
-/* eslint-disable no-param-reassign */
-/* eslint-disable consistent-return  */
 
 function remove(id) {
   return _TodoModel2.default.remove({ _id: id }).exec();
