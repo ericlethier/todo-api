@@ -1,5 +1,4 @@
 import * as express from "express";
-// import Promise from "bluebird";
 import Todo from "./TodoModel.js";
 import * as TodoService from "./TodoService.js";
 
@@ -20,7 +19,12 @@ router.get("/todos", (req, res) => {
 
 router.get("/todos/:id", (req, res) => {
   TodoService.get(req.params.id)
-  .then(todo => res.json(todo))
+  .then((todo) => {
+    if (todo !== null) {
+      return res.json(todo);
+    }
+    return res.json({});
+  })
   .catch(err => res.send(err));
 });
 
@@ -46,6 +50,16 @@ router.post("/todos", (req, res) => {
 /* eslint-disable consistent-return  */
 
 router.put("/todos/:id", (req, res) => {
+  req.checkBody("description", "Invalid description.").notEmpty();
+  req.checkBody("completed", "Invalid completed.").notEmpty();
+  const errors = req.validationErrors();
+  if (errors) {
+    const response = { errors: [] };
+    errors.forEach((err) => {
+      response.errors.push(err.msg);
+    });
+    return res.json(response);
+  }
   const todo = new Todo();
   todo.description = req.body.description;
   todo.completed = req.body.completed;
@@ -55,10 +69,12 @@ router.put("/todos/:id", (req, res) => {
   .catch(err => res.send(err));
 });
 
+/* eslint-disable no-underscore-dangle  */
 router.delete("/todos/:id", (req, res) => {
   TodoService.remove(req.params.id)
-  .then(res.json({ message: "Todo deleted." }))
+  .then(() => res.json({ message: "Todo deleted." }))
   .catch(err => res.send(err));
 });
+/* eslint-disable no-underscore-dangle  */
 
 module.exports = router;

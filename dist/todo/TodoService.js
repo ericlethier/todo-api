@@ -28,10 +28,10 @@ function get(id) {
 }
 
 function update(id, todo) {
-  return _TodoModel2.default.update({ _id: id }, { $set: { description: todo.description,
+  return _TodoModel2.default.findByIdAndUpdate(id, { $set: { description: todo.description,
       completed: todo.completed } }).exec();
 }
 
 function remove(id) {
-  return _TodoModel2.default.remove({ _id: id }).exec();
+  return _TodoModel2.default.findByIdAndRemove(id).exec();
 }

@@ -14,6 +14,7 @@ gulp.task("mocha", () => {
       compilers: {
         js: "js:babel-core/register",
       },
+      reporter: "min",
     }));
 });
 
