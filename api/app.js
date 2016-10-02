@@ -11,6 +11,7 @@ import config from "./config/env/development";
 
 const app = express();
 
+
 // init the mongodb connection
 mongoose.Promise = bluebird;
 mongoose.connect(config.db, { server: { socketOptions: { keepAlive: 1 } } });

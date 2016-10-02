@@ -81,7 +81,7 @@ describe("Todos", () => {
 
   describe("/PUT todos", () => {
     it("it should UPDATE a todo", (done) => {
-      const todo = { description: "updated test task", completed: true };
+      const todo = { completed: true };
       chai.request(server)
             .put(`${baseUrl}/57ebf394a26dd314c4d66615`)
             .send(todo)
@@ -96,7 +96,7 @@ describe("Todos", () => {
 
   describe("/PUT todos", () => {
     it("it should NOT UPDATE a todo", (done) => {
-      const todo = { description: "updated test task", completed: true };
+      const todo = { completed: true };
       chai.request(server)
             .put(`${baseUrl}/99`)
             .send(todo)

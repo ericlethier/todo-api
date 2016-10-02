@@ -50,7 +50,6 @@ router.post("/todos", (req, res) => {
 /* eslint-disable consistent-return  */
 
 router.put("/todos/:id", (req, res) => {
-  req.checkBody("description", "Invalid description.").notEmpty();
   req.checkBody("completed", "Invalid completed.").notEmpty();
   const errors = req.validationErrors();
   if (errors) {
@@ -61,7 +60,6 @@ router.put("/todos/:id", (req, res) => {
     return res.json(response);
   }
   const todo = new Todo();
-  todo.description = req.body.description;
   todo.completed = req.body.completed;
 
   TodoService.update(req.params.id, todo)
@@ -69,12 +67,10 @@ router.put("/todos/:id", (req, res) => {
   .catch(err => res.send(err));
 });
 
-/* eslint-disable no-underscore-dangle  */
 router.delete("/todos/:id", (req, res) => {
   TodoService.remove(req.params.id)
   .then(() => res.json({ message: "Todo deleted." }))
   .catch(err => res.send(err));
 });
-/* eslint-disable no-underscore-dangle  */
 
 module.exports = router;

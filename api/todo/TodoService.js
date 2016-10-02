@@ -13,8 +13,7 @@ export function get(id) {
 }
 
 export function update(id, todo) {
-  return Todo.findByIdAndUpdate(id, { $set: { description: todo.description,
-     completed: todo.completed } }).exec();
+  return Todo.findByIdAndUpdate(id, { $set: { completed: todo.completed } }).exec();
 }
 
 export function remove(id) {

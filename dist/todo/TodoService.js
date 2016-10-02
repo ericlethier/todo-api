@@ -28,8 +28,7 @@ function get(id) {
 }
 
 function update(id, todo) {
-  return _TodoModel2.default.findByIdAndUpdate(id, { $set: { description: todo.description,
-      completed: todo.completed } }).exec();
+  return _TodoModel2.default.findByIdAndUpdate(id, { $set: { completed: todo.completed } }).exec();
 }
 
 function remove(id) {

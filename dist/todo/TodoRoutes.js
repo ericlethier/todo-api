@@ -1,6 +1,6 @@
 "use strict";
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _express = require("express");
 
@@ -76,7 +76,6 @@ router.post("/todos", function (req, res) {
 /* eslint-disable consistent-return  */
 
 router.put("/todos/:id", function (req, res) {
-  req.checkBody("description", "Invalid description.").notEmpty();
   req.checkBody("completed", "Invalid completed.").notEmpty();
   var errors = req.validationErrors();
   if (errors) {
@@ -93,7 +92,6 @@ router.put("/todos/:id", function (req, res) {
     if ((typeof _ret2 === "undefined" ? "undefined" : _typeof(_ret2)) === "object") return _ret2.v;
   }
   var todo = new _TodoModel2.default();
-  todo.description = req.body.description;
   todo.completed = req.body.completed;
 
   TodoService.update(req.params.id, todo).then(function (_todo) {
@@ -103,7 +101,6 @@ router.put("/todos/:id", function (req, res) {
   });
 });
 
-/* eslint-disable no-underscore-dangle  */
 router.delete("/todos/:id", function (req, res) {
   TodoService.remove(req.params.id).then(function () {
     return res.json({ message: "Todo deleted." });
@@ -111,6 +108,5 @@ router.delete("/todos/:id", function (req, res) {
     return res.send(err);
   });
 });
-/* eslint-disable no-underscore-dangle  */
 
 module.exports = router;
